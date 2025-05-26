@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-function SignIn() {
+function SignInPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [remember, setRemember] = useState(false);
@@ -52,4 +52,4 @@ function SignIn() {
   );
 }
 
-export default SignIn;
+export default SignInPage;

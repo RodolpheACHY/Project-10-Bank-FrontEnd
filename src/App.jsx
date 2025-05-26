@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Layout from './components/Layout';
 import HomePage from './pages/HomePage';
 import SignInPage from './pages/SignInPage';
+import ProfilePage from './pages/ProfilePage';
 
 function App() {
   return (
@@ -11,7 +12,8 @@ function App() {
         <Route path="/" element={<Layout />}>
           <Route index element={<HomePage />} />
           <Route path="sign-in" element={<SignInPage />} />
-          {/* autres routes */}
+          <Route path="profile" element={<ProfilePage/>} />
+          {/* <Route path="*" element={<Page404 />} />  */}
         </Route>
       </Routes>
     </Router>
