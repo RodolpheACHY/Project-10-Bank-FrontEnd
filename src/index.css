@@ -187,6 +187,33 @@ body {
   border-color: #00bc77;
   background-color: #00bc77;
   color: #fff;
+  border-style: solid;
+  cursor: pointer; 
+  position: relative; /* Indispensable pour positionner le pseudo-élément par rapport au bouton */
+  overflow: hidden;  /* Optionnel: si vous voulez que le trait "apparaisse" de l'intérieur du bouton */
+  z-index: 1; /* Assure que le texte du bouton est au-dessus du trait */
+}
+
+/* Pseudo-élément qui sera le trait sous le texte */
+.sign-in-button::after {
+  content: ''; /* Obligatoire pour les pseudo-éléments */
+  position: absolute;
+  height: 2px ;
+  background-color: #fff;
+  top: calc(100% - 10px);  /* Positionne le trait à quelques pixels du bas du bouton */
+  /*bottom: 10px; /* Ou ajustez cette valeur pour placer le trait précisément */
+  left: 50%; /* Commence au milieu horizontalement */
+  transform: translateX(-50%) scaleX(0); /* Cache le trait et le centre */
+  width: 100%; /* Définissez une largeur maximale, la transformation la réduira/agrandira */
+  transform-origin: center; /* Le trait s'étire à partir du centre */
+  transition: transform 0.3s ease-out; /* Animation douce pour le déploiement */
+  z-index: -1; /* Place le trait derrière le texte du bouton */
+}
+
+/* État au survol (hover) */
+.sign-in-button:hover::after {
+  transform: translateX(-50%) scaleX(0.25); 
+ 
 }
 
 .sign-in-content {
