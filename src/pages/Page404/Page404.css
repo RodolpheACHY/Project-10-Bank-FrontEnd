@@ -1,0 +1,52 @@
+.Page404 {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  text-align: center; 
+  justify-content: space-between;
+}
+  
+.Page404__content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex-grow: 1; 
+}
+  
+.Page404__title {
+  /*color: settings.$primary-color; */
+  text-align: center;
+  line-height: 1;
+  font-size: 288px;
+  font-style: normal;
+  /* font-weight: settings.$font-weight-bold; */
+  margin-bottom: 50px;
+}
+  
+.Page404__message {
+  /* color: settings.$primary-color;
+  font-size: settings.$font-size-h2; */
+  font-style: normal;
+  /* font-weight: settings.$font-weight-regular; */
+}
+  
+.Page404__link {
+  /* color: settings.$black;
+  font-size: settings.$font-size-h4; */
+  font-style: normal;
+  /* font-weight: settings.$font-weight-regular;*/
+  line-height: 142.6%;
+  text-decoration-line: underline;
+  text-decoration-style: solid;
+  text-decoration-skip-ink: none;
+  text-decoration-thickness: auto;
+  text-underline-offset: auto;
+  /* text-underline-position: from-font; */
+  transition: color 0.3s;
+  
+  &:hover {
+    text-decoration: underline;
+    /* color: settings.$primary-color; */
+  }
+}
