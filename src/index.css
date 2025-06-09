@@ -1,32 +1,72 @@
-/* html, body, #root {
-  height: 100%;
-  margin: 0;
-  padding: 0;
-} */
-
 html {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+  height: 100%;
 }
 
 body {
   margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+#root {
+  height: 100%;
+}
+
+.layout {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  min-height: 100%;
 }
 
-.main {
-   flex: 1; 
+.main-content {
+  flex: 1 0 auto;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
 }
 
-.bg-dark {
+.main-content.bg-dark {
   background-color: #12002b;
+  flex: 1;
+  min-height: 100%;
+}
+
+.footer {
+  flex-shrink: 0;
+  height: 80px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-top: 2px solid #ccc;
+  background-color: #fff;
+  width: 100%;
+}
+
+.footer-text {
+  margin: 0;
+  padding: 0;
+}
+
+.main-content {
+  flex: 1 0 auto;
+  width: 100%;
+  padding: 0;
+  margin: 0;
   display: flex;
   flex-direction: column;
+}
+
+.main-content.bg-dark {
+  background-color: #12002b;
+  flex: 1;
+  min-height: 100%;
 }
 
 .signin-page-content {
@@ -120,12 +160,6 @@ body {
   font-size: 0.9rem;
 }
 
-.layout {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-}
-
 @media (min-width: 920px) {
   .hero {
     height: 400px;
@@ -198,18 +232,17 @@ body {
 
 /* Pseudo-élément qui sera le trait sous le texte */
 .sign-in-button::after {
-  content: ''; /* Obligatoire pour les pseudo-éléments */
+  content: ''; 
   position: absolute;
   height: 2px ;
   background-color: #fff;
-  top: calc(100% - 10px);  /* Positionne le trait à quelques pixels du bas du bouton */
-  /*bottom: 10px; /* Ou ajustez cette valeur pour placer le trait précisément */
-  left: 50%; /* Commence au milieu horizontalement */
-  transform: translateX(-50%) scaleX(0); /* Cache le trait et le centre */
-  width: 100%; /* Définissez une largeur maximale, la transformation la réduira/agrandira */
-  transform-origin: center; /* Le trait s'étire à partir du centre */
-  transition: transform 0.3s ease-out; /* Animation douce pour le déploiement */
-  z-index: -1; /* Place le trait derrière le texte du bouton */
+  top: calc(100% - 10px);
+  left: 50%; 
+  transform: translateX(-50%) scaleX(0); 
+  width: 100%; 
+  transform-origin: center; 
+  transition: transform 0.3s ease-out; 
+  z-index: -1;
 }
 
 /* État au survol (hover) */
@@ -223,6 +256,7 @@ body {
   width: 300px;
   margin: 0 auto;
   margin-top: 3rem;
+  margin-bottom: 9rem;
   padding: 2rem;
 }
 
@@ -252,18 +286,6 @@ body {
 .input-wrapper input {
   padding: 5px;
   font-size: 1.2rem;
-}
-
-.footer {
-  display: flex;
-  justify-content: center;
-  border-top: 2px solid #ccc;
-  padding: 2rem 0 1.5rem;
-}
-
-.footer-text {
-  margin: 0;
-  padding: 0;
 }
 
 .account {
@@ -342,31 +364,29 @@ body {
 }
 
 /* formulaire profile user */
-
 .form-container  {
-  /* This helps center the entire form if needed, and ensures children take full width */
   display: flex;
-  flex-direction: column; /* Stack input-row and button-row vertically */
-  align-items: center; /* Center the rows horizontally within the form */
-  width: 100%; /* Or a specific max-width if you want the form to be narrower */
-  gap: 15px; /* Space between the input row and button row */
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  gap: 15px;
   margin-top: 1rem;
 }
 
 .form-container .inputs-row {
   display: flex;
-  justify-content: center; /* Centers the inputs horizontally */
-  align-items: center; /* Aligns them vertically if they have different heights */
-  gap: 15px; /* Space between the two input fields */
-  width: 100%; /* Make sure it takes full width for centering */
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  width: 100%;
 }
 
 .form-container .inputs-row input {
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 4px;
-  flex: 1; /* Allows inputs to grow and shrink, distributing space */
-  max-width: 180px; /* Optional: Limit max width of each input for better aesthetics */
+  flex: 1;
+  max-width: 180px;
   color: #c3cfd9;
   height: 1.5rem;
   font-weight: 700;
@@ -374,10 +394,10 @@ body {
 
 .form-container .buttons-row {
   display: flex;
-  justify-content: center; /* Centers the buttons horizontally */
+  justify-content: center;
   align-items: center;
-  gap: 15px; /* Space between the two buttons */
-  width: 100%; /* Make sure it takes full width for centering */
+  gap: 15px;
+  width: 100%;
 }
 
 .form-container .buttons-row button {
@@ -386,7 +406,6 @@ body {
   border-radius: 4px;
   cursor: pointer;
   font-weight: bold;
-  /* Basic styling for buttons */
 }
 
 .form-container .buttons-row button[type="submit"] {
@@ -396,7 +415,7 @@ body {
     min-width: 120px;
 }
 
-.form-container .buttons-row button[type="button"] { /* For Cancel button */
+.form-container .buttons-row button[type="button"] {
   background-color: #fff;
     color: #00bc77;
     border: 2px solid  #00bc77;

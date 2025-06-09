@@ -62,7 +62,7 @@ const Layout = () => {
     return (
       <div className='layout'>
         <MainNav />
-        <main>
+        <main className='main-content'>
           <p>Loading...</p>
         </main>
         <Footer />
@@ -73,7 +73,7 @@ const Layout = () => {
   return (
     <div className='layout'>
       {isAuthenticated && user ? <UserNav /> : <MainNav />}
-      <main>
+      <main className='main-content'>
         <Outlet />
       </main>
       <Footer />

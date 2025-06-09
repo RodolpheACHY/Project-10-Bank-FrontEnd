@@ -38,7 +38,7 @@ function SignInPage() {
   };
 
   return (
-    <main className="main bg-dark">
+    <div className="main-content bg-dark">
       <section className="sign-in-content">
         <i className="fa fa-user-circle sign-in-icon"></i>
         <h1>Sign In</h1>
@@ -80,7 +80,7 @@ function SignInPage() {
           )}
         </form>
       </section>
-    </main>
+    </div>
   );
 }
 
