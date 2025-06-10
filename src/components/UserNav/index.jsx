@@ -12,7 +12,7 @@ function UserNav() {
 
   const handleLogout = () => {
     dispatch(logout()); // Déclenchez l'action de déconnexion
-    // Invalidez tout le cache de authApi pour que les prochaines requêtes soient fraîches
+    // Nettoyage de tout le cache d'authApi pour ne pas laisser de traces des précédentes connexions
     dispatch(authApi.util.resetApiState());
     navigate('/sign-in'); // Redirigez l'utilisateur vers la page de connexion
   };

@@ -1,0 +1,224 @@
+swagger: '2.0'
+info:
+  title: Bank Argent API documentation
+  description: Contains all available API endpoints in this codebase
+  version: '1.0.0'
+  termsOfService: 'http://swagger.io/terms/'
+host: localhost:3001
+basePath: /api/v1
+schemes:
+  - http
+paths:
+  /accounts/{accountId}/transactions:
+    get:
+      security:
+        - Bearer: []      # Gère déjà l'authentification
+      tags:
+        - Transaction Module
+      summary: Get Account Transactions
+      description: API for fetching transactions for a specific account
+      parameters:
+        - in: path      # Nécessaire car {accountId} est dans l'URL
+          name: accountId
+          required: true
+          type: string
+          description: ID of the account to fetch transactions for
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Account transactions retrieved successfully
+          schema:
+            $ref: '#/definitions/TransactionResponse'
+        '400':
+          description: Invalid Fields
+          schema:
+            $ref: '#/definitions/BaseApiResponse'
+        '401':
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/BaseApiResponse'
+        '404':
+          description: Transaction not found
+          schema:
+            $ref: '#/definitions/BaseApiResponse'
+        
+        '500':
+          description: Internal Server Error
+  /accounts/{accountId}/transactions/{transactionId}:
+    get:
+      security:
+        - Bearer: []
+      tags:
+        - Transaction Module
+      summary: Get a Specific Account Transaction
+      description: API for fetching a specific transaction for a specific account
+      parameters:
+        - in: path
+          name: accountId
+          required: true
+          type: string
+          description: ID of the account containing the transaction
+        - in: path
+          name: transactionId
+          required: true
+          type: string
+          description: ID of the transaction to fetch
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Account transaction retrieved successfully
+          schema:
+            $ref: '#/definitions/TransactionResponse'
+        '400':
+          description: Invalid Fields
+          schema:
+            $ref: '#/definitions/BaseApiResponse'
+        '401':
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/BaseApiResponse'
+        '404':
+          description: Transaction not found
+          schema:
+            $ref: '#/definitions/BaseApiResponse'
+        '500':
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/BaseApiResponse'  
+    patch:
+      security:
+        - Bearer: []
+      tags:
+        - Transaction Module
+      summary: Update Transaction Categories and Notes
+      description: API for updating transaction attributes like category and notes for a specific account
+      parameters:
+        - in: path
+          name: accountId
+          required: true
+          type: string
+          description: ID of the account containing the transaction
+        - in: path
+          name: transactionId
+          required: true
+          type: string
+          description: ID of the transaction to update
+        - in: body
+          name: body
+          description: Update transaction attributes
+          required: true
+          schema:
+            $ref: '#/definitions/UpdateTransactions'
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Transaction updated successfully
+          schema:
+            $ref: '#/definitions/BaseApiResponse'
+        '400':
+          description: Invalid Fields
+          schema:
+            $ref: '#/definitions/BaseApiResponse'
+        '401':
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/BaseApiResponse'
+        '404':
+          description: Transaction not found
+          schema:
+            $ref: '#/definitions/BaseApiResponse'
+        '500':
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/BaseApiResponse'
+securityDefinitions:
+  Bearer:
+    type: apiKey
+    name: Authorization
+    in: header
+definitions:
+  # Structure de base pour toutes les réponses API
+  BaseApiResponse:
+    type: object
+    properties:
+      status:
+        type: integer
+      message:
+        type: string
+  UpdateTransactions:
+    type: object
+    properties:
+      # La propriété 'category' est un tableau de chaînes de caractères,
+      # et chaque chaîne doit faire partie de l'énumération définie.
+      category:
+        type: array
+        description: Liste des catégories disponibles pour une transaction.
+        items:
+          type: string
+          enum: # Chaque élément du tableau doit être l'une de ces valeurs
+            - "Food"
+            - "Transports"
+            - "Clothes"
+            - "Rent"
+      notes: 
+        type: string
+        description: Champ de texte libre pour saisir des notes ou des commentaires additionnels.
+        # Options supplémentaires (facultatives) pour un champ de texte :
+        maxLength: 500 # Longueur maximale du texte (ex: 500 caractères)
+        minLength: 0   # Longueur minimale (0 si les notes sont facultatives)
+  TransactionResponse:
+    type: object
+    properties:
+      status:
+        type: integer
+      message:
+        type: string
+      body:           # body est un objet, pas un tableau
+        type: object
+        properties:
+          account:    # Information du compte
+            type: object
+            properties:
+              accountId:
+                type: string
+              accountTitle:
+                type: string
+                example: "Argent Bank Checking (x8349)"
+              balance:
+                type: number
+                description: Current account balance (same as latest transaction balance)
+                example: 2082.79
+          transactions:    # Liste des transactions
+            type: array
+            items:
+              type: object
+              additionalProperties: false  # Empêche les propriétés non déclarées
+              properties:
+                transactionId:
+                  type: string
+                date:
+                  type: string
+                description:
+                  type: string
+                amount:
+                  type: number
+                balance:
+                  type: number
+                type:   # Type de transactions
+                  type: string
+                  example: "Electronics"
+                category:
+                  type: array
+                  description: Liste des catégories disponibles pour une transaction.
+                  items:
+                    type: string
+                    enum: # Chaque élément du tableau doit être l'une de ces valeurs
+                      - "Food"
+                      - "Transports"
+                      - "Clothes"
+                      - "Rent"
+                notes:
+                  type: string
