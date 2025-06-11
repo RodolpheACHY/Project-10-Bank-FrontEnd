@@ -1,79 +1,79 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-// Fonction pour récupérer le token initial du localStorage ou sessionStorage
-const getInitialToken = () => {
-  try {
-    return localStorage.getItem('token') || sessionStorage.getItem('token');
-  } catch (e) {
-    console.error("Storage access denied:", e);
-    return null;
-  }
-};
-
 const initialState = {
-  token: getInitialToken(),
-  user: null, // Les infos user seront stockées ici une fois récupérées
-  isAuthenticated: !!getInitialToken(), // Initialisation basée sur le token
-  rememberMe: localStorage.getItem('rememberMe') === 'true'
+  token: null,
+  user: null,
+  isAuthenticated: false,
+  rememberMe: false
 };
 
 const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    // Action pour définir le token (appelée après une connexion réussie via RTK Query)
     setToken: (state, action) => {
       state.token = action.payload;
-      state.isAuthenticated = !!action.payload; // Met à jour isAuthenticated
-      try {
-        // Si rememberMe est true, utiliser localStorage, sinon sessionStorage
+      state.isAuthenticated = !!action.payload;
+      
+      if (action.payload) {
+        // Si rememberMe est true, on sauvegarde dans localStorage
         if (state.rememberMe) {
-          if (action.payload) {
-            localStorage.setItem('token', action.payload);
-          } else {
-            localStorage.removeItem('token');
-          }
+          localStorage.setItem('token', action.payload);
+          sessionStorage.removeItem('token');
         } else {
-          if (action.payload) {
-            sessionStorage.setItem('token', action.payload);
-          } else {
-            sessionStorage.removeItem('token');
-          }
+          // Sinon dans sessionStorage
+          sessionStorage.setItem('token', action.payload);
+          localStorage.removeItem('token');
         }
-      } catch (e) {
-        console.error("Storage access denied:", e);
+      } else {
+        // Si pas de token, on nettoie les deux storages
+        localStorage.removeItem('token');
+        sessionStorage.removeItem('token');
       }
     },
-    // Action pour définir les informations de l'utilisateur (appelée après la récupération du profil)
     setUser: (state, action) => {
       state.user = action.payload;
     },
     setRememberMe: (state, action) => {
       state.rememberMe = action.payload;
-      try {
-        localStorage.setItem('rememberMe', action.payload);
-        // Si on désactive rememberMe, on nettoie le localStorage
-        if (!action.payload) {
+      
+      // Si on change rememberMe et qu'on a un token, on le déplace
+      if (state.token) {
+        if (action.payload) {
+          // Si on active rememberMe, on déplace vers localStorage
+          localStorage.setItem('token', state.token);
+          sessionStorage.removeItem('token');
+        } else {
+          // Si on désactive rememberMe, on déplace vers sessionStorage
+          sessionStorage.setItem('token', state.token);
           localStorage.removeItem('token');
         }
-      } catch (e) {
-        console.error("Local storage access denied:", e);
       }
     },
-    // Action de déconnexion
     logout: (state) => {
-      state.token = null;
-      state.isAuthenticated = false;
-      state.user = null;
-      try {
-        localStorage.removeItem('token');
-        sessionStorage.removeItem('token');
-      } catch (e) {
-        console.error("Storage access denied:", e);
-      }
+      // On nettoie le state
+      Object.assign(state, {
+        ...initialState,
+        rememberMe: state.rememberMe // On garde la préférence rememberMe
+      });
+      
+      // On nettoie les deux storages
+      localStorage.removeItem('token');
+      sessionStorage.removeItem('token');
     },
+    // Nouvelle action pour initialiser le token depuis le storage approprié
+    initializeFromStorage: (state) => {
+      const token = state.rememberMe 
+        ? localStorage.getItem('token')
+        : sessionStorage.getItem('token');
+      
+      if (token) {
+        state.token = token;
+        state.isAuthenticated = true;
+      }
+    }
   },
 });
 
-export const { setToken, setUser, setRememberMe, logout } = authSlice.actions;
+export const { setToken, setUser, setRememberMe, logout, initializeFromStorage } = authSlice.actions;
 export default authSlice.reducer;

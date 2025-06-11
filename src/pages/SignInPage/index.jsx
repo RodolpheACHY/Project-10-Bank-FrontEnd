@@ -2,18 +2,18 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLoginMutation } from '../../services/authApi';
-import { setToken } from '../../features/auth/authSlice';
+import { setToken, setRememberMe } from '../../features/auth/authSlice';
 
 function SignInPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [remember, setRemember] = useState(false);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+  const rememberMe = useSelector((state) => state.auth.rememberMe);
 
-  const [login, { isLoading, error, isSuccess, data: loginData }] = useLoginMutation();
+  const [login, { isLoading, error }] = useLoginMutation();
   
   useEffect(() => {
     if (isAuthenticated) {
@@ -21,17 +21,13 @@ function SignInPage() {
     }
   }, [isAuthenticated, navigate]);
 
-  useEffect(() => {
-    if (isSuccess && loginData?.body?.token) {
-      const token = loginData.body.token;
-      dispatch(setToken(token));
-    }
-  }, [isSuccess, loginData, dispatch]);
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await login({ email, password }).unwrap();
+      const result = await login({ email, password }).unwrap();
+      if (result?.body?.token) {
+        dispatch(setToken(result.body.token));
+      }
     } catch (err) {
       console.error('Failed to login:', err);
     }
@@ -65,8 +61,8 @@ function SignInPage() {
             <input
               type="checkbox"
               id="remember-me"
-              checked={remember}
-              onChange={(e) => setRemember(e.target.checked)}
+              checked={rememberMe}
+              onChange={(e) => dispatch(setRememberMe(e.target.checked))}
             />
             <label htmlFor="remember-me">Remember me</label>
           </div>

@@ -6,15 +6,14 @@ import Footer from '../Footer';
 import MainNav from '../MainNav';
 import UserNav from '../UserNav';
 import { useGetUserProfileMutation, authApi } from '../../services/authApi';
-import { setUser, logout } from '../../features/auth/authSlice';
+import { setUser, logout, initializeFromStorage } from '../../features/auth/authSlice';
 
 const Layout = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const { isAuthenticated, token } = useSelector((state) => state.auth);
-  const user = useSelector((state) => state.auth.user);
+  const { isAuthenticated, token, user } = useSelector((state) => state.auth);
 
   const protectedRoutes = ['/profile'];
   const isProtectedRoute = protectedRoutes.includes(location.pathname);
@@ -23,6 +22,13 @@ const Layout = () => {
     triggerGetUserProfile,
     { isLoading: isProfileLoading, data: userProfileData }
   ] = useGetUserProfileMutation();
+
+  // Effet pour initialiser le token depuis le storage approprié
+  useEffect(() => {
+    if (!token) {
+      dispatch(initializeFromStorage());
+    }
+  }, [dispatch, token]);
 
   // Effet pour mettre à jour le user dans le store quand on reçoit les données
   useEffect(() => {
