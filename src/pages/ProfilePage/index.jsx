@@ -2,18 +2,19 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { useGetUserProfileMutation, useUpdateUserNameMutation } from '../../services/authApi';
+import { useGetUserProfileQuery, useUpdateUserNameMutation } from '../../services/authApi';
 import AccountCard from '../../components/AccountCard';
 import EditNameForm from '../../components/EditNameform';
 
 function ProfilePage() {
   const navigate = useNavigate();
-  const { isAuthenticated, token, user } = useSelector((state) => state.auth);
-
+  const { isAuthenticated, token } = useSelector((state) => state.auth);
   const [isEditingName, setIsEditingName] = useState(false);
   
-  const [triggerGetUserProfile, { isLoading: isProfileLoading, isError: isProfileError, error: profileError }] = useGetUserProfileMutation();
+  const { data: userProfileData, isLoading: isProfileLoading, isError: isProfileError, error: profileError } = useGetUserProfileQuery();
   const [updateName, { isLoading: isUpdateLoading, error: updateError }] = useUpdateUserNameMutation();
+
+  const user = userProfileData?.body;
 
   // Effet pour vérifier l'authentification
   useEffect(() => {
@@ -52,7 +53,6 @@ function ProfilePage() {
     try {
       await updateName({ firstName: newFirstName, lastName: newLastName }).unwrap();
       setIsEditingName(false);
-      await triggerGetUserProfile().unwrap();
     } catch (err) {
       console.error('Failed to update name:', err);
     }

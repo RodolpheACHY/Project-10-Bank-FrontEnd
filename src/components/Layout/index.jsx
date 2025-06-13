@@ -5,8 +5,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import Footer from '../Footer';
 import MainNav from '../MainNav';
 import UserNav from '../UserNav';
-import { useGetUserProfileMutation, authApi } from '../../services/authApi';
-import { setUser, logout, initializeFromStorage } from '../../features/auth/authSlice';
+import { useGetUserProfileQuery, authApi } from '../../services/authApi';
+import { setUser, logout, setToken } from '../../features/auth/authSlice';
 
 const Layout = () => {
   const location = useLocation();
@@ -18,53 +18,52 @@ const Layout = () => {
   const protectedRoutes = ['/profile'];
   const isProtectedRoute = protectedRoutes.includes(location.pathname);
 
-  const [
-    triggerGetUserProfile,
-    { isLoading: isProfileLoading, data: userProfileData }
-  ] = useGetUserProfileMutation();
+  const { 
+    data: userProfileData,
+    isLoading: isProfileLoading,
+    error: profileError
+  } = useGetUserProfileQuery(undefined, {
+    // on Skip la requête si pas de token
+    skip: !token,
+    // Refetch toutes les 30 secondes si la page est active
+    pollingInterval: 30000
+  });
 
-  // Effet pour initialiser le token depuis le storage approprié
+  // Effet pour vérifier le token dans sessionStorage
   useEffect(() => {
     if (!token) {
-      dispatch(initializeFromStorage());
+      const sessionToken = sessionStorage.getItem('tempToken');
+      if (sessionToken) {
+        dispatch(setToken(sessionToken));
+      }
     }
   }, [dispatch, token]);
 
   // Effet pour mettre à jour le user dans le store quand on reçoit les données
   useEffect(() => {
-    if (userProfileData && userProfileData.body) {
+    if (userProfileData?.body) {
       dispatch(setUser(userProfileData.body));
     }
   }, [userProfileData, dispatch]);
 
-  // Effet principal pour gérer l'authentification et le chargement du profil
+  // Effet pour gérer les erreurs d'authentification
   useEffect(() => {
-    const loadUserProfile = async () => {
-      if (token && !user && !isProfileLoading) {
-        try {
-          await triggerGetUserProfile().unwrap();
-        } catch (error) {
-          if (error?.status === 401) {
-            dispatch(logout());
-            dispatch(authApi.util.resetApiState());
-            navigate('/sign-in');
-          }
-        }
-      }
-    };
-
-    loadUserProfile();
-  }, [token, user, isProfileLoading, location.pathname, triggerGetUserProfile, dispatch, navigate]);
+    if (profileError?.status === 401) {
+      dispatch(logout());
+      dispatch(authApi.util.resetApiState());
+      navigate('/sign-in');
+    }
+  }, [profileError, dispatch, navigate]);
 
   // Effet pour la redirection si non authentifié sur route protégée
   useEffect(() => {
-    if (isProtectedRoute && !isAuthenticated && !token && !isProfileLoading) {
+    if (isProtectedRoute && !isAuthenticated && !token && !sessionStorage.getItem('tempToken') && !isProfileLoading) {
       navigate('/sign-in');
     }
   }, [isAuthenticated, token, isProfileLoading, isProtectedRoute, navigate]);
 
   // Affichage du loading pendant le chargement du profil
-  if (token && !user && isProfileLoading) {
+  if ((token || sessionStorage.getItem('tempToken')) && !user && isProfileLoading) {
     return (
       <div className='layout'>
         <MainNav />

@@ -1,8 +1,8 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
-// Définissez votre service API en utilisant un base URL et des "endpoints"
+// On définit notre service API en utilisant une base URL et des "endpoints"
 export const authApi = createApi({
-    reducerPath: 'authApi', // Nom unique pour ce reducer dans votre store
+    reducerPath: 'authApi',
     baseQuery: fetchBaseQuery({
       baseUrl: 'http://localhost:3001/api/v1/',
       // Prépare l'en-tête d'autorisation pour toutes les requêtes si un token est présent
@@ -14,7 +14,7 @@ export const authApi = createApi({
         return headers;
       },
     }),
-    tagTypes: ['User'], // Types de tags pour l'invalidation du cache (utile pour les mutations)
+    tagTypes: ['User'], 
     endpoints: (builder) => ({
       // Endpoint pour la connexion (mutation car cela modifie l'état du serveur)
       login: builder.mutation({
@@ -25,7 +25,7 @@ export const authApi = createApi({
         }),
       }),
       // Endpoint pour récupérer le profil utilisateur ()
-      getUserProfile: builder.mutation({
+      getUserProfile: builder.query({
         query: () => ({
           url: 'user/profile', // Le token est ajouté par prepareHeaders
           method: 'POST',
@@ -34,7 +34,7 @@ export const authApi = createApi({
       }),
       // Endpoint pour mettre à jour le nom de l'utilisateur (mutation)
       updateUserName: builder.mutation({
-        query: ({ firstName, lastName }) => ({ // Les informations à envoyer
+        query: ({ firstName, lastName }) => ({
           url: 'user/profile',
           method: 'PUT',
           body: { firstName, lastName },
@@ -46,4 +46,4 @@ export const authApi = createApi({
   });
   
   // Exportez les hooks générés automatiquement pour vos endpoints
-export const { useLoginMutation, useGetUserProfileMutation, useUpdateUserNameMutation } = authApi;
+export const { useLoginMutation, useGetUserProfileQuery, useUpdateUserNameMutation } = authApi;

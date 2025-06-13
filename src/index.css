@@ -23,6 +23,21 @@ body {
   min-height: 100%;
 }
 
+.main {
+  flex: 1 0 auto;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.main.bg-dark {
+  background-color: #12002b;
+  flex: 1;
+  min-height: 100%;
+}
+
 .main-content {
   flex: 1 0 auto;
   width: 100%;
@@ -30,11 +45,16 @@ body {
   margin: 0;
   display: flex;
   flex-direction: column;
-  background-color: #2c3e50;
 }
 
 .main-content.bg-dark {
   background-color: #12002b;
+  flex: 1;
+  min-height: 100%;
+}
+
+.main-content.bg-light {
+  background-color: #fff;
   flex: 1;
   min-height: 100%;
 }
@@ -65,7 +85,7 @@ body {
 }
 
 .main-content.bg-dark {
-  background-color: #12002b;
+  background-color: #2c3e50;
   flex: 1;
   min-height: 100%;
 }
@@ -226,9 +246,9 @@ body {
   color: #fff;
   border-style: solid;
   cursor: pointer; 
-  position: relative; /* Indispensable pour positionner le pseudo-élément par rapport au bouton */
-  overflow: hidden;  /* Optionnel: si vous voulez que le trait "apparaisse" de l'intérieur du bouton */
-  z-index: 1; /* Assure que le texte du bouton est au-dessus du trait */
+  position: relative; 
+  overflow: hidden;
+  z-index: 1; 
 }
 
 /* Pseudo-élément qui sera le trait sous le texte */
@@ -380,6 +400,7 @@ body {
   align-items: center;
   gap: 15px;
   width: 100%;
+  flex-wrap: wrap;
 }
 
 .form-container .inputs-row input {
@@ -399,6 +420,7 @@ body {
   align-items: center;
   gap: 15px;
   width: 100%;
+  flex-wrap: wrap;
 }
 
 .form-container .buttons-row button {
@@ -409,19 +431,55 @@ body {
   font-weight: bold;
 }
 
-.form-container .buttons-row button[type="submit"] {
-  background-color: #fff;
-    color: #00bc77;
-    border: 2px solid  #00bc77;
-    min-width: 120px;
-}
-
+.form-container .buttons-row button[type="submit"],
 .form-container .buttons-row button[type="button"] {
   background-color: #fff;
-    color: #00bc77;
-    border: 2px solid  #00bc77;
-    min-width: 120px;
+  color: #00bc77;
+  border: 2px solid #00bc77;
+  min-width: 120px;
 }
+
+/* Media queries pour la responsivité pour les inputs et les boutons des petits écrans inéfieurs à 450px*/
+@media (max-width: 450px) {
+  .form-container .inputs-row {
+    flex-direction: column;
+    width: 90%;
+  }
+
+  .form-container .inputs-row input {
+    max-width: 100%;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .form-container .buttons-row {
+    flex-direction: column;
+    width: 90%;
+  }
+
+  .form-container .buttons-row button {
+    width: 100%;
+    min-width: unset;
+  }
+}
+
+@media (max-width: 320px) {
+  .form-container .inputs-row,
+  .form-container .buttons-row {
+    width: 85%;
+    gap: 10px;
+  }
+
+  .form-container .inputs-row input {
+    padding: 6px;
+    height: 1.2rem;
+  }
+
+  .form-container .buttons-row button {
+    padding: 6px 10px;
+  }
+}
+
 @media (min-width: 720px) {
   .account {
     flex-direction: row;
@@ -435,3 +493,4 @@ body {
     width: 200px;
   }
 }
+
