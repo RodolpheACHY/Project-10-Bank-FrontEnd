@@ -14,7 +14,7 @@ function UserNav() {
       console.log('Déconnexion initiée');
       
       // 1. Annuler toutes les requêtes en cours
-      dispatch(authApi.util.invalidateTags(['User']));
+      //dispatch(authApi.util.invalidateTags(['User']));
       
       // 2. Déclencher le logout pour nettoyer le token immédiatement
       dispatch(logout());

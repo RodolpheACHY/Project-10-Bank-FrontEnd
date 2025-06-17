@@ -11,7 +11,7 @@ function ProfilePage() {
   const { isAuthenticated, token } = useSelector((state) => state.auth);
   const [isEditingName, setIsEditingName] = useState(false);
   
-  const { data: userProfileData, isLoading: isProfileLoading, isError: isProfileError, error: profileError } = useGetUserProfileQuery();
+  const { data: userProfileData, isLoading: isProfileLoading, isError: isProfileError, error: profileError } = useGetUserProfileQuery(undefined, { skip: !token || !isAuthenticated });
   const [updateName, { isLoading: isUpdateLoading, error: updateError }] = useUpdateUserNameMutation();
 
   const user = userProfileData?.body;
