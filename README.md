@@ -33,8 +33,8 @@ Argent Bank est une application web permettant aux utilisateurs de :
 ### Prérequis
 - Node.js (version 16 ou supérieure)
 - npm ou yarn
-- Backend API Argent Bank en cours d'exécution
-- Récupérer le BackEnd avec l'API sur ce repo et l'installer en suivant bien les intructions : https://github.com/OpenClassrooms-Student-Center/Project-10-Bank-API 
+- Récupérer le Backend API Argent Bank sur ce repo et l'installer en suivant bien les intructions : 
+https://github.com/OpenClassrooms-Student-Center/Project-10-Bank-API 
 
 ### Étapes d'installation
 
@@ -96,7 +96,7 @@ L'application sera accessible à l'adresse : `http://localhost:5173`
 
 ### Déconnexion
 - Cliquer sur "Sign Out" dans la navigation
-- Déconnexion immédiate avec redirection
+- Déconnexion immédiate avec redirection vers la HomePage
 
 ## 🏗️ Structure du Projet
 
@@ -182,7 +182,7 @@ Ce projet est sous licence MIT. Voir le fichier `LICENSE` pour plus de détails.
 
 ## 👨‍💻 Auteur
 
-**[Rodolphe  ACHY]**
+**Rodolphe  ACHY**
 
 ## 🙏 Remerciements
 
