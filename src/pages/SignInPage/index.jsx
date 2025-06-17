@@ -12,14 +12,16 @@ function SignInPage() {
   const dispatch = useDispatch();
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   const rememberMe = useSelector((state) => state.auth.rememberMe);
+  const token = useSelector((state) => state.auth.token);
 
   const [login, { isLoading, error }] = useLoginMutation();
   
   useEffect(() => {
-    if (isAuthenticated) {
+    if (isAuthenticated && token) {
+      console.log('Redirection vers le profil après connexion réussie');
       navigate('/profile');
     }
-  }, [isAuthenticated, navigate]);
+  }, [isAuthenticated, token, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -71,7 +73,7 @@ function SignInPage() {
           </button>
           {error && (
             <div className="error-message" style={{ color: 'red', marginTop: '1rem' }}>
-              {error.data?.message || 'An error occurred during sign in'}
+              Invalid email or password. Please try again.
             </div>
           )}
         </form>

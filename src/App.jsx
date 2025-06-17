@@ -15,7 +15,6 @@ function App() {
           <Route path="sign-in" element={<SignInPage />} />
           <Route path="profile" element={<ProfilePage/>} />
           <Route path="*" element={<Page404 />} />     
-          {/* <Route path="*" element={<Page404 />} />  */}
         </Route>
       </Routes>
     </Router>

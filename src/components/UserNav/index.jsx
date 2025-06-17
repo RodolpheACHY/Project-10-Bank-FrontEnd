@@ -1,20 +1,34 @@
 import React from 'react';
 import { NavLink, useNavigate} from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { logout } from '../../features/auth/authSlice'; // Importez l'action de déconnexion
-import { authApi } from '../../services/authApi'; // Importez l'API slice pour invalider le cache
+import { logout } from '../../features/auth/authSlice';
+import { authApi } from '../../services/authApi';
 
 function UserNav() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  // Récupérez les infos utilisateur depuis le slice 'auth'
   const user = useSelector((state) => state.auth.user);
 
   const handleLogout = () => {
-    dispatch(logout()); // Déclenchez l'action de déconnexion
-    // Nettoyage de tout le cache d'authApi pour ne pas laisser de traces des précédentes connexions
-    dispatch(authApi.util.resetApiState());
-    navigate('/sign-in'); // Redirigez l'utilisateur vers la page de connexion
+    try {
+      console.log('Déconnexion initiée');
+      
+      // 1. Annuler toutes les requêtes en cours
+      dispatch(authApi.util.invalidateTags(['User']));
+      
+      // 2. Déclencher le logout pour nettoyer le token immédiatement
+      dispatch(logout());
+      
+      // 3. Nettoyer le cache RTK Query
+      dispatch(authApi.util.resetApiState());
+      
+      // 4. Rediriger vers homepage
+      navigate('/', { replace: true });
+      
+    } catch (error) {
+      console.error('Logout error:', error);
+      navigate('/', { replace: true });
+    }
   };
   
   return (
@@ -28,7 +42,7 @@ function UserNav() {
         <h1 className="sr-only">Argent Bank</h1>
       </NavLink>
       <div>
-      {user ? ( // Affichez les liens utilisateur si l'objet user est présent
+      {user ? (
           <>
             <NavLink
               to="/profile"
@@ -37,7 +51,7 @@ function UserNav() {
               }
             >
               <i className="fa fa-user-circle main-nav-icon-user"></i>
-              {user.firstName} {/* Afficher le prénom de l'utilisateur */}
+              {user.firstName}
             </NavLink>
             <button className="main-nav-item" onClick={handleLogout} style={{ background: 'none', border: 'none', color: '#2c3e50', fontWeight: 'bold', cursor: 'pointer', fontSize: '1rem', marginRight: '0.5rem' }}>
               <i className="fa fa-sign-out main-nav-icon-user"></i>
@@ -45,7 +59,6 @@ function UserNav() {
             </button>
           </>
       ) : (
-          // Afficher le lien de connexion si l'utilisateur n'est pas connecté
             <NavLink
               to="/sign-in"
               className="main-nav-item"

@@ -9,6 +9,7 @@ export const authApi = createApi({
       prepareHeaders: (headers, { getState }) => {
         const token = getState().auth.token; // Accédez au token depuis le store Redux
         if (token) {
+          console.log('Token utilisé pour la requête:', token);
           headers.set('authorization', `Bearer ${token}`);
         }
         return headers;
@@ -26,11 +27,22 @@ export const authApi = createApi({
       }),
       // Endpoint pour récupérer le profil utilisateur ()
       getUserProfile: builder.query({
-        query: () => ({
-          url: 'user/profile', // Le token est ajouté par prepareHeaders
-          method: 'POST',
-        }),
-        providesTags: ['User'], // Taguer cette donnée avec 'User' pour l'invalidation,  cela dit à RTK Query que toutes les données étiquetées 'User' sont obsolètes
+        query: () => {
+          console.log('Requête de profil utilisateur envoyée');
+          return {
+            url: 'user/profile',
+            method: 'POST',
+          };
+        },
+        transformResponse: (response) => {
+          console.log('Réponse du profil reçue:', response);
+          return response;
+        },
+        transformErrorResponse: (error) => {
+          console.log('Erreur du profil:', error);
+          return error;
+        },
+        providesTags: ['User'], // Taguer cette donnée avec 'User' pour l'invalidation,  cela dit à RTK Query que toutes les données étiquetées 'User' sont obsolètes 
       }),
       // Endpoint pour mettre à jour le nom de l'utilisateur (mutation)
       updateUserName: builder.mutation({

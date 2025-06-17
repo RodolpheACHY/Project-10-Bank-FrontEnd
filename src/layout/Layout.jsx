@@ -41,7 +41,6 @@ const Layout = () => {
 
   // Effet pour vérifier le token dans sessionStorage
   useEffect(() => {
-    // Avec Redux Persist, cette logique est simplifiée
     if (!token && initialized) {
       const rememberMe = localStorage.getItem('rememberMe') === 'true';
       const storedToken = rememberMe 
@@ -66,7 +65,7 @@ const Layout = () => {
   // Effet pour gérer les erreurs d'authentification
   useEffect(() => {
     if (profileError?.status === 401 && token) {
-      console.log('Erreur 401 - Token invalide, déconnexion...');
+      console.log('Erreur 401 - Déconnexion...');
       dispatch(logout());
       dispatch(authApi.util.resetApiState());
       navigate('/');
@@ -75,7 +74,6 @@ const Layout = () => {
 
   // Effet pour nettoyer les tokens après déconnexion
   useEffect(() => {
-    // Simplifier la condition avec Redux Persist
     if (location.pathname === '/' && !isAuthenticated && !token && initialized) {
       console.log('Nettoyage des tokens après déconnexion');
       sessionStorage.removeItem('token');
@@ -131,7 +129,7 @@ const Layout = () => {
             <div className="header">
               <h1>Loading App...</h1>
             </div>
-          </div>
+          </div> 
         </main>
         <Footer />
       </div>
@@ -140,7 +138,7 @@ const Layout = () => {
 
   // Écran de chargement pendant le chargement du profil
   const hasValidToken = token || sessionStorage.getItem('tempToken');
-  if (hasValidToken && !user && !profileError && isProfileLoading && location.pathname !== '/') {
+  if (hasValidToken && !user && !profileError && isProfileLoading) {
     console.log('Loading profile...', { 
       hasToken: !!token, 
       hasTempToken: !!sessionStorage.getItem('tempToken'),

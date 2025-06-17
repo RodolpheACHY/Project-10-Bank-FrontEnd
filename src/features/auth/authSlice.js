@@ -1,79 +1,87 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-const initialState = {
-  token: null,
-  user: null,
-  isAuthenticated: false,
-  rememberMe: false
-};
-
 const authSlice = createSlice({
   name: 'auth',
-  initialState,
+  initialState: {
+    token: null,
+    user: null,
+    isAuthenticated: false,
+    rememberMe: localStorage.getItem('rememberMe') === 'true',
+    initialized: false
+  },
   reducers: {
     setToken: (state, action) => {
       state.token = action.payload;
       state.isAuthenticated = !!action.payload;
       
       if (action.payload) {
-        // Si rememberMe est true, on sauvegarde dans localStorage
         if (state.rememberMe) {
           localStorage.setItem('token', action.payload);
           sessionStorage.removeItem('token');
+          sessionStorage.removeItem('tempToken');
         } else {
-          // Sinon dans sessionStorage
           sessionStorage.setItem('token', action.payload);
           localStorage.removeItem('token');
         }
       } else {
-        // Si pas de token, on nettoie les deux storages
         localStorage.removeItem('token');
         sessionStorage.removeItem('token');
+        sessionStorage.removeItem('tempToken');
       }
     },
     setUser: (state, action) => {
+      console.log('setUser appelé avec:', action.payload);
       state.user = action.payload;
+      // Ne pas modifier isAuthenticated ici
     },
     setRememberMe: (state, action) => {
       state.rememberMe = action.payload;
+      localStorage.setItem('rememberMe', action.payload);
       
-      // Si on change rememberMe et qu'on a un token, on le déplace
       if (state.token) {
         if (action.payload) {
-          // Si on active rememberMe, on déplace vers localStorage
           localStorage.setItem('token', state.token);
           sessionStorage.removeItem('token');
+          sessionStorage.removeItem('tempToken');
         } else {
-          // Si on désactive rememberMe, on déplace vers sessionStorage
           sessionStorage.setItem('token', state.token);
           localStorage.removeItem('token');
         }
       }
     },
     logout: (state) => {
-      // On nettoie le state
-      Object.assign(state, {
-        ...initialState,
-        rememberMe: state.rememberMe // On garde la préférence rememberMe
-      });
+      console.log('Déconnexion explicite - Nettoyage complet');
       
-      // On nettoie les deux storages
+      // Nettoyer le state Redux
+      state.token = null;
+      state.user = null;
+      state.isAuthenticated = false;
+      
+      // Pour un logout explicite, toujours nettoyer tous les tokens
+      // Le rememberMe ne concerne que la fermeture du navigateur, pas un logout volontaire
       localStorage.removeItem('token');
       sessionStorage.removeItem('token');
+      sessionStorage.removeItem('tempToken');
+      console.log('Logout explicite - Tous les tokens supprimés');
     },
-    // Nouvelle action pour initialiser le token depuis le storage approprié
-    initializeFromStorage: (state) => {
-      const token = state.rememberMe 
-        ? localStorage.getItem('token')
-        : sessionStorage.getItem('token');
+    initializeAuth: (state) => {
+      if (state.initialized) return;
       
+      const rememberMe = localStorage.getItem('rememberMe') === 'true';
+      const token = rememberMe 
+        ? localStorage.getItem('token')
+        : sessionStorage.getItem('token') || sessionStorage.getItem('tempToken');
+
       if (token) {
         state.token = token;
         state.isAuthenticated = true;
       }
+      
+      state.rememberMe = rememberMe;
+      state.initialized = true;
     }
   },
 });
 
-export const { setToken, setUser, setRememberMe, logout, initializeFromStorage } = authSlice.actions;
+export const { setToken, setUser, setRememberMe, logout, initializeAuth } = authSlice.actions;
 export default authSlice.reducer;
