@@ -14,7 +14,7 @@ Argent Bank est une application web permettant aux utilisateurs de :
 ## 🛠️ Technologies Utilisées
 
 ### Frontend
-- **React** 19 - Bibliothèque JavaScript pour l'interface utilisateur
+- **React 19** - Bibliothèque JavaScript pour l'interface utilisateur
 - **Redux Toolkit** - Gestion d'état moderne et efficace
 - **RTK Query** - Gestion des données et cache automatique
 - **React Router** - Navigation côté client
