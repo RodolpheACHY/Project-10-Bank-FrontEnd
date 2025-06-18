@@ -24,7 +24,7 @@ const Layout = () => {
     error: profileError,
     isSuccess: isProfileSuccess
   } = useGetUserProfileQuery(undefined, {
-    skip: !token || !isAuthenticated
+    skip: !token || !isAuthenticated,
     refetchOnMountOrArgChange: true,
     refetchOnFocus: false,
     refetchOnReconnect: false,

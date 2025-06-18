@@ -1,13 +1,11 @@
 // src/pages/UserProfilePage/index.jsx
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useGetUserProfileQuery, useUpdateUserNameMutation } from '../../services/authApi';
 import AccountCard from '../../components/AccountCard';
 import EditNameForm from '../../components/EditNameform';
 
 function ProfilePage() {
-  const navigate = useNavigate();
   const { isAuthenticated, token } = useSelector((state) => state.auth);
   const [isEditingName, setIsEditingName] = useState(false);
   
@@ -16,12 +14,7 @@ function ProfilePage() {
 
   const user = userProfileData?.body;
 
-  // Effet pour vérifier l'authentification
-  useEffect(() => {
-    if (!isAuthenticated && !token) {
-      navigate('/sign-in');
-    }
-  }, [isAuthenticated, token, navigate]);
+  // Protection gérée par PrivateRoute - plus besoin de vérification ici
 
   // Si le profil est en cours de chargement
   if (isProfileLoading || !user) {
