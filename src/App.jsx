@@ -5,7 +5,7 @@ import PrivateRoute from './components/PrivateRoute';
 import HomePage from './pages/HomePage';
 import SignInPage from './pages/SignInPage';
 import ProfilePage from './pages/ProfilePage';
-import Page404 from './pages/page404/page404';
+import Page404 from './pages/Page404/Page404';
 
 function App() {
   return (
